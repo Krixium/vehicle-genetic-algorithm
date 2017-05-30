@@ -105,7 +105,7 @@ function spawnClones() {
 function displayData() {
   var log = 'Vehicles:\n';
   vehicles.forEach(function(v) {
-    log += `Health: ${v.health.toFixed(2)}\n`
+    log += v.log();
   });
   document.getElementById('data').innerText = log;
 }

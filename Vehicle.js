@@ -1,7 +1,7 @@
 var mutationRate = 0.01;
 var mutationScale = 0.5;
 
-function Vehicle(x, y, dna) {
+function Vehicle(x, y, dna, generation) {
   this.accel = createVector(0, 0);
   this.vel = createVector(0, -2);
   this.pos = createVector(x, y);
@@ -14,19 +14,18 @@ function Vehicle(x, y, dna) {
 
   this.d = 50;
 
-  /*
-  [0] = Food weight
-  [1] = Poison weight
-  [2] = Food perception
-  [3] = Poison perception
-   */
-  this.dna = [];
+  if (generation === undefined) {
+    this.generation = 0;
+  } else {
+    this.generation = generation + 1;
+  }
+
   if (dna === undefined) {
     this.dna = [
-      random(-2, 2),
-      random(-2, 2),
-      random(0, 300),
-      random(0, 300)
+      random(-2, 2),      // Food Weight
+      random(-2, 2),      // Poison Weight
+      random(0, 300),     // Food Perception
+      random(0, 300)      // Poison Perception
     ];
   } else {
     this.dna = dna.map(function(n) {
@@ -132,7 +131,7 @@ function Vehicle(x, y, dna) {
   }
 
   this.clone = function() {
-    return new Vehicle(this.pos.x, this.pos.y, this.dna);
+    return new Vehicle(this.pos.x, this.pos.y, this.dna, this.generation);
   }
 
   this.draw = function() {
@@ -162,5 +161,9 @@ function Vehicle(x, y, dna) {
         vertex(this.r, this.r * 2);
       endShape(CLOSE);
     pop();
+  }
+
+  this.log = function() {
+    return `HP: ${this.health.toFixed(2)}, Generation: ${this.generation}\n`;
   }
 }

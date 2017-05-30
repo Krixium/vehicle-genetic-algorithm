@@ -53,22 +53,20 @@ function draw() {
     drawVector(p, color(255, 0, 0));
   });
 
-  vehicles.forEach(function(v) {
-    v.boundaries();
-    v.hunt(food, poison);
-    v.update();
-    v.draw();
-  });
+  vehicles.forEach(function(veh, idx, arr) {
+    veh.boundaries();
+    veh.hunt(food, poison);
+    veh.update();
+    veh.draw();
 
-  vehicles = vehicles.filter(function(v) {
-    if (v.isDead()) {
-      food.push(createVector(v.pos.x, v.pos.y));
-      return false;
-    } else {
-      return true;
-    }
+    if (veh.isDead()) {
+      food.push(
+        createVector(veh.pos.x, veh.pos.y)
+      );
+      arr.splice(idx, 1);
+    } 
   });
-
+  
   spawnClones();
   generateParticles();
   displayData();

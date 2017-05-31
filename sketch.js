@@ -23,7 +23,6 @@ function setup() {
   fill(51);
   rect(0, 0, c.w, c.h);
   for (var i = 0; i < meta.vehicleCount; i++) {
-    // Randomize dna here
     vehicles.push(
       new Vehicle(random(c.w), random(c.h))
     );
@@ -53,7 +52,7 @@ function draw() {
     drawVector(p, color(255, 0, 0));
   });
 
-  vehicles.forEach(function(veh, idx, arr) {
+  vehicles.forEach((veh, idx, arr) => {
     veh.boundaries();
     veh.hunt(food, poison);
     veh.update();
@@ -93,7 +92,7 @@ function generateParticles() {
 }
 
 function spawnClones() {
-  vehicles.forEach(function(v) {
+  vehicles.forEach((v) => {
     if (random(1) < meta.cloneRate) {
       vehicles.push(v.clone());
     }
@@ -102,7 +101,7 @@ function spawnClones() {
 
 function displayData() {
   var log = 'Vehicles:\n';
-  vehicles.forEach(function(v) {
+  vehicles.forEach((v) => {
     log += v.log();
   });
   document.getElementById('data').innerText = log;

@@ -1,5 +1,5 @@
 var mutationRate = 0.01;
-var mutationScale = 0.5;
+var mutationScale = 0.75;
 
 function Vehicle(x, y, dna, generation) {
   this.accel = createVector(0, 0);
@@ -60,10 +60,11 @@ function Vehicle(x, y, dna, generation) {
     var record = Infinity;
     var closest = null;
 
-    for (var i = list.length - 1; i >= 0; i--) {
-      var d = this.pos.dist(list[i]);
+    list.forEach((target, i, array) => {
+      var d = this.pos.dist(target);
+
       if (d < this.maxSpeed) {
-        list.splice(i, 1);
+        array.splice(i, 1);
         this.health += nutrition;
       } else {
         if (d < record && d < perception) {
@@ -71,7 +72,7 @@ function Vehicle(x, y, dna, generation) {
           closest = list[i];
         }
       }
-    }
+    });
     
     if (closest !== null) {
       return this.seek(closest);
@@ -86,9 +87,9 @@ function Vehicle(x, y, dna, generation) {
       this.eat(bad, -0.75, this.dna[3]).mult(this.dna[1])
     ];
 
-    steering.forEach(function(s) {
+    steering.forEach((s) => {
       this.applyForce(s);
-    }.bind(this));
+    });
   }
 
   this.boundaries = function() {

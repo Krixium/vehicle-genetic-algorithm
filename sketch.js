@@ -16,7 +16,7 @@ var vehicles = [];
 var food = [];
 var poison = [];
 
-function setup() {
+var setup = () => {
   var cnv = createCanvas(c.w, c.h);
   cnv.parent('container');
 
@@ -41,7 +41,7 @@ function setup() {
   }
 }
 
-function draw() {
+var draw = () => {
   background(51);
 
   food.forEach(function(f) {
@@ -71,13 +71,13 @@ function draw() {
   displayData();
 }
 
-function drawVector(v, color) {
+var drawVector = (v, color) => {
   fill(color);
   noStroke();
   ellipse(v.x, v.y, 6, 6);
 }
 
-function generateParticles() {
+var generateParticles = () => {
   if (random(1) < meta.foodSpawnRate) {
     food.push(
       createVector(random(c.w), random(c.h))
@@ -91,7 +91,7 @@ function generateParticles() {
   }
 }
 
-function spawnClones() {
+var spawnClones = () => {
   vehicles.forEach((v) => {
     if (random(1) < meta.cloneRate) {
       vehicles.push(v.clone());
@@ -99,7 +99,7 @@ function spawnClones() {
   })
 }
 
-function displayData() {
+var displayData = () => {
   var log = 'Vehicles:\n';
   vehicles.forEach((v) => {
     log += v.log();

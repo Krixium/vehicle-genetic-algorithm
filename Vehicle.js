@@ -1,52 +1,54 @@
 var mutationRate = 0.01;
 var mutationScale = 0.75;
 
-function Vehicle(x, y, dna, generation) {
-  this.accel = createVector(0, 0);
-  this.vel = createVector(0, -2);
-  this.pos = createVector(x, y);
-  this.r = 4;
-  this.maxSpeed = 5;
-  this.maxForce = 0.5;
-  
-  this.health = 1;
-  this.color = color(0, 255, 0);
+class Vehicle {
+  constructor(x, y, dna, generation) {
+    this.accel = createVector(0, 0);
+    this.vel = createVector(0, -2);
+    this.pos = createVector(x, y);
+    this.r = 4;
+    this.maxSpeed = 5;
+    this.maxForce = 0.5;
+    
+    this.health = 1;
+    this.color = color(0, 255, 0);
 
-  this.d = 50;
-  this.timeOfSpawn = new Date();
+    this.d = 50;
+    this.timeOfSpawn = new Date();
 
-  if (generation === undefined) {
-    this.generation = 0;
-  } else {
-    this.generation = generation + 1;
+    if (generation === undefined) {
+      this.generation = 0;
+    } else {
+      this.generation = generation + 1;
+    }
+
+    if (dna === undefined) {
+      this.dna = [
+        random(-2, 2),      // Food Weight
+        random(-2, 2),      // Poison Weight
+        random(0, 300),     // Food Perception
+        random(0, 300)      // Poison Perception
+      ];
+    } else {
+      this.dna = dna.map(function(n) {
+        if (random(1) < mutationRate) {
+          if (random(1) > 0.5) {
+            return n + (n * random(mutationScale)); 
+          } else {
+            return n - (n * random(mutationScale));
+          }
+        } 
+
+        return n;
+      });
+    }
   }
 
-  if (dna === undefined) {
-    this.dna = [
-      random(-2, 2),      // Food Weight
-      random(-2, 2),      // Poison Weight
-      random(0, 300),     // Food Perception
-      random(0, 300)      // Poison Perception
-    ];
-  } else {
-    this.dna = dna.map(function(n) {
-      if (random(1) < mutationRate) {
-        if (random(1) > 0.5) {
-          return n + (n * random(mutationScale)); 
-        } else {
-          return n - (n * random(mutationScale));
-        }
-      } 
-
-      return n;
-    });
-  }
-
-  this.applyForce = function(force) {
+  applyForce(force) {
     this.accel.add(force);
   }
 
-  this.seek = function(target) {
+  seek(target) {
     var desired = p5.Vector.sub(target, this.pos);
 
     desired.setMag(this.maxSpeed);
@@ -57,7 +59,7 @@ function Vehicle(x, y, dna, generation) {
     return steer;
   }
 
-  this.eat = function(list, nutrition, perception) {
+  eat(list, nutrition, perception) {
     var record = Infinity;
     var closest = null;
 
@@ -82,7 +84,7 @@ function Vehicle(x, y, dna, generation) {
     return createVector(0, 0);
   }
 
-  this.hunt = function(good, bad) {
+  hunt(good, bad) {
     var steering = [
       this.eat(good, 0.2, this.dna[2]).mult(this.dna[0]),
       this.eat(bad, -0.75, this.dna[3]).mult(this.dna[1])
@@ -93,7 +95,7 @@ function Vehicle(x, y, dna, generation) {
     });
   }
 
-  this.boundaries = function() {
+  boundaries() {
     var desired = null;
 
     if (this.pos.x < this.d) {
@@ -117,7 +119,7 @@ function Vehicle(x, y, dna, generation) {
     }
   }
 
-  this.update = function() {
+  update() {
     this.health -= 0.005;
 
     this.vel.add(this.accel);
@@ -128,15 +130,15 @@ function Vehicle(x, y, dna, generation) {
     this.accel.mult(0);
   }
 
-  this.isDead = function() {
+  isDead() {
     return this.health < 0;
   }
 
-  this.clone = function() {
+  clone() { 
     return new Vehicle(this.pos.x, this.pos.y, this.dna, this.generation);
   }
 
-  this.draw = function() {
+  draw() { 
     var angle = this.vel.heading() + PI / 2;
     this.color = lerpColor(color(255, 0, 0), color(0, 255, 0), this.health);
 
@@ -165,11 +167,11 @@ function Vehicle(x, y, dna, generation) {
     pop();
   }
 
-  this.log = function() {
+  log() {
     return `HP: ${this.health.toFixed(2)}, Generation: ${this.generation}, Time Alive: ${this.calcTimeAlive()}\n`;
   }
 
-  this.calcTimeAlive = () => {
+  calcTimeAlive() {
     var rawSeconds = int(new Date().getTime() - this.timeOfSpawn.getTime()) / 1000; 
     var seconds = parseInt(rawSeconds % 60);
     var minutes = parseInt(rawSeconds / 60);

@@ -13,6 +13,7 @@ function Vehicle(x, y, dna, generation) {
   this.color = color(0, 255, 0);
 
   this.d = 50;
+  this.timeOfSpawn = new Date();
 
   if (generation === undefined) {
     this.generation = 0;
@@ -165,6 +166,15 @@ function Vehicle(x, y, dna, generation) {
   }
 
   this.log = function() {
-    return `HP: ${this.health.toFixed(2)}, Generation: ${this.generation}\n`;
+    return `HP: ${this.health.toFixed(2)}, Generation: ${this.generation}, Time Alive: ${this.calcTimeAlive()}\n`;
+  }
+
+  this.calcTimeAlive = () => {
+    var rawSeconds = int(new Date().getTime() - this.timeOfSpawn.getTime()) / 1000; 
+    var seconds = parseInt(rawSeconds % 60);
+    var minutes = parseInt(rawSeconds / 60);
+    var hours = parseInt(minutes / 60);
+
+    return `${hours}h ${minutes}m ${seconds}s`;
   }
 }
